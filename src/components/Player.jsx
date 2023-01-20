@@ -36,7 +36,7 @@ const Player = (props) => {
 
     const remainingTime = (duration, time) => {
         let remainT = duration - time;
-        return getTime(remainT)
+        return getTime(remainT);
     }
 
     const dragHandler = (e) => {
