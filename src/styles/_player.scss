@@ -1,9 +1,9 @@
 .player {
-    min-height: 20vh;
+    min-height: 25vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .time-control {
@@ -22,11 +22,12 @@
 }
 
 .play-control {
+    margin-top: 1rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
     padding: 1rem;
-    width: 30%;
+    width: 25%;
 
     svg {
         cursor: pointer;
