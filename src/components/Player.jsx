@@ -2,6 +2,13 @@ import React, { useRef, useState } from "react";
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from 'react-icons/fa';
 
 const Player = (props) => {
+    
+    // State
+    const [songInfo, setSongInfo] = useState({
+        currentTime: 0,
+        duration: 0,
+    });  
+
     // Ref
     const audioRef = useRef(null);
 
@@ -44,25 +51,40 @@ const Player = (props) => {
         setSongInfo({ ...songInfo, currentTime: e.target.value });
     }
 
-    // State
-    const [songInfo, setSongInfo] = useState({
-        currentTime: 0,
-        duration: 0,
-    });
-
     return (
         <div className="player">
+            
             <div className="time-control">
                 <p>{getTime(songInfo.currentTime)}</p>
-                <input onChange={dragHandler} min={0} max={songInfo.duration} value={songInfo.currentTime} type="range" />
-                <p>{!props.isPlaying ? getTime(songInfo.duration) : remainingTime(songInfo.duration, songInfo.currentTime)}</p>
+                <input 
+                    onChange={dragHandler} 
+                    min={0} 
+                    max={songInfo.duration} 
+                    value={songInfo.currentTime} 
+                    type="range" 
+                />
+                <p>
+                    {!props.isPlaying ? 
+                    getTime(songInfo.duration) : 
+                    remainingTime(songInfo.duration, songInfo.currentTime)}
+                </p>
             </div>
+            
             <div className="play-control">
                 <FaAngleLeft size={20} className="skip-back" />
-                {!props.isPlaying ? <FaPlay size={25} className="play" onClick={playSongHandler} /> : <FaPause size={25} className="pause" onClick={playSongHandler} />}
+                {!props.isPlaying ? 
+                <FaPlay size={25} className="play" onClick={playSongHandler} /> :
+                <FaPause size={25} className="pause" onClick={playSongHandler} />}
                 <FaAngleRight size={20} className="skip-forward" />
             </div>
-            <audio onLoadedMetadata={timeUpdateHandler} onTimeUpdate={timeUpdateHandler} ref={audioRef} src={props.currentSong.audio}></audio>
+            
+            <audio 
+                onLoadedMetadata={timeUpdateHandler} 
+                onTimeUpdate={timeUpdateHandler} 
+                ref={audioRef} 
+                src={props.currentSong.audio}>
+            </audio>
+       
         </div>
     );
 }
