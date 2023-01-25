@@ -35,29 +35,45 @@ function App() {
     });
   }
 
+  const songEndHandler = () => {
+    let currentIndex = songs.findIndex((song) => song.id == currentSong.id);
+    setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+    if (isPlaying) {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.then((audio) => {
+          audioRef.current.play();
+        })
+      }
+    }
+  }
+
   //------------------------------------------->> Component
   return (
-    <>
+    <div className={`App ${libraryOpen ? "library-active" : ""}`}>
       <Nav libraryOpen={libraryOpen} setLibraryOpen={setLibraryOpen} />
 
       <Song currentSong={currentSong} />
       <Player
         currentSong={currentSong}
+        setCurrentSong={setCurrentSong}
         isPlaying={isPlaying}
         setIsPlaying={setIsPlaying}
         audioRef={audioRef}
         songInfo={songInfo}
         setSongInfo={setSongInfo}
+        songs={songs}
+        setSongs={setSongs}
       />
 
       {
         <Library
           songs={songs}
+          setSongs={setSongs}
           setCurrentSong={setCurrentSong}
           audioRef={audioRef}
           isPlaying={isPlaying}
           setIsPlaying={setIsPlaying}
-          setSongs={setSongs}
           libraryOpen={libraryOpen}
         />
       }
@@ -66,10 +82,12 @@ function App() {
         onLoadedMetadata={timeUpdateHandler}
         onTimeUpdate={timeUpdateHandler}
         ref={audioRef}
-        src={currentSong.audio}>
+        src={currentSong.audio}
+        onEnded={songEndHandler}
+      >
       </audio>
 
-    </>
+    </div>
   )
 }
 

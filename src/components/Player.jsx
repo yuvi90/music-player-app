@@ -1,9 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from 'react-icons/fa';
 
-const Player = ({ audioRef, isPlaying, setIsPlaying, songInfo, setSongInfo }) => {
+const Player = ({ currentSong, setCurrentSong, audioRef, isPlaying, setIsPlaying, songInfo, setSongInfo, songs, setSongs }) => {
 
-//----------------------------------------------->> Event Handlers
+    useEffect(() => {
+        const newSongs = songs.map((song) => {
+            if (song.id == currentSong.id) {
+                return {
+                    ...song,
+                    active: true,
+                };
+            } else {
+                return {
+                    ...song,
+                    active: false,
+                };
+            }
+        });
+        setSongs(newSongs);
+    }, [currentSong]);
+
+    //----------------------------------------------->> Event Handlers
     const playSongHandler = () => {
         if (!isPlaying) {
             audioRef.current.play();
@@ -31,7 +48,37 @@ const Player = ({ audioRef, isPlaying, setIsPlaying, songInfo, setSongInfo }) =>
         setSongInfo({ ...songInfo, currentTime: e.target.value });
     }
 
-//--------------------------------------------------------------------->> Component
+    const skipTrackHandler = (direction) => {
+        let currentIndex = songs.findIndex((song) => song.id == currentSong.id);
+        if (direction === 'skip-forward') {
+            setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+        }
+        if (direction === 'skip-back') {
+            if ((currentIndex - 1) % songs.length === -1) {
+                setCurrentSong(songs[songs.length - 1]);
+                if (isPlaying) {
+                    const playPromise = audioRef.current.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then((audio) => {
+                            audioRef.current.play();
+                        })
+                    }
+                }
+                return;
+            }
+            setCurrentSong(songs[(currentIndex - 1) % songs.length]);
+        }
+        if (isPlaying) {
+            const playPromise = audioRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.then((audio) => {
+                    audioRef.current.play();
+                })
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------->> Component
     return (
         <div className="player">
 
@@ -46,15 +93,19 @@ const Player = ({ audioRef, isPlaying, setIsPlaying, songInfo, setSongInfo }) =>
                 />
                 <p>
                     {
-                        !isPlaying ?
-                            getTime(songInfo.duration) :
-                            remainingTime(songInfo.duration, songInfo.currentTime)
+                        songInfo.duration ? 
+                            (
+                                !isPlaying ?
+                                    getTime(songInfo.duration) :
+                                    remainingTime(songInfo.duration, songInfo.currentTime)
+                            ) : "0:00"
+
                     }
                 </p>
             </div>
 
             <div className="play-control">
-                <FaAngleLeft size={20} className="skip-back" />
+                <FaAngleLeft size={20} className="skip-back" onClick={() => { skipTrackHandler('skip-back') }} />
 
                 {
                     !isPlaying ?
@@ -62,7 +113,7 @@ const Player = ({ audioRef, isPlaying, setIsPlaying, songInfo, setSongInfo }) =>
                         <FaPause size={25} className="pause" onClick={playSongHandler} />
                 }
 
-                <FaAngleRight size={20} className="skip-forward" />
+                <FaAngleRight size={20} className="skip-forward" onClick={() => { skipTrackHandler('skip-forward') }} />
             </div>
 
         </div>

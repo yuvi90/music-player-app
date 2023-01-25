@@ -11,10 +11,17 @@ nav {
         cursor: pointer;
         padding: 0.5rem;
         transition: all 0.3s ease;
+        z-index: 100;
         
         &:hover {
             background: rgb(65, 65, 65);
             color: #fff;
         }
+    }
+}
+
+@media screen and (max-width: 992px) {
+    nav {
+        justify-content: space-between;
     }
 }
