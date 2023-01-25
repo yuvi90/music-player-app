@@ -8,10 +8,18 @@
     box-shadow: 2px 2px 50px rgb(204, 204, 204);
     overflow-x: hidden;
     overflow-y: scroll;
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: all 0.5s ease;
 
     h2 {
         padding: 2rem;
     }
+}
+
+.active-library {
+    transform: translateX(0%);
+    opacity: 1;
 }
 
 .library-song {
@@ -38,6 +46,10 @@
     h4 {
         font-size: 0.7rem;
     }
+}
+
+.selected {
+    background: rgb(192, 191, 192);
 }
 
 * {

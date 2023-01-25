@@ -1,38 +1,18 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from 'react-icons/fa';
 
-const Player = (props) => {
-    
-    // State
-    const [songInfo, setSongInfo] = useState({
-        currentTime: 0,
-        duration: 0,
-    });  
+const Player = ({ audioRef, isPlaying, setIsPlaying, songInfo, setSongInfo }) => {
 
-    // Ref
-    const audioRef = useRef(null);
-
-    // Event Handlers
+//----------------------------------------------->> Event Handlers
     const playSongHandler = () => {
-        if (!props.isPlaying) {
+        if (!isPlaying) {
             audioRef.current.play();
-            props.setIsPlaying(true);
+            setIsPlaying(true);
         }
         else {
             audioRef.current.pause();
-            props.setIsPlaying(false);
+            setIsPlaying(false);
         }
-    }
-
-    const timeUpdateHandler = (e) => {
-        const current = e.target.currentTime;
-        const duration = e.target.duration;
-
-        setSongInfo({
-            ...songInfo,
-            currentTime: current,
-            duration: duration,
-        });
     }
 
     const getTime = (time) => {
@@ -51,40 +31,40 @@ const Player = (props) => {
         setSongInfo({ ...songInfo, currentTime: e.target.value });
     }
 
+//--------------------------------------------------------------------->> Component
     return (
         <div className="player">
-            
+
             <div className="time-control">
                 <p>{getTime(songInfo.currentTime)}</p>
-                <input 
-                    onChange={dragHandler} 
-                    min={0} 
-                    max={songInfo.duration} 
-                    value={songInfo.currentTime} 
-                    type="range" 
+                <input
+                    onChange={dragHandler}
+                    min={0}
+                    max={songInfo.duration || 0}
+                    value={songInfo.currentTime}
+                    type="range"
                 />
                 <p>
-                    {!props.isPlaying ? 
-                    getTime(songInfo.duration) : 
-                    remainingTime(songInfo.duration, songInfo.currentTime)}
+                    {
+                        !isPlaying ?
+                            getTime(songInfo.duration) :
+                            remainingTime(songInfo.duration, songInfo.currentTime)
+                    }
                 </p>
             </div>
-            
+
             <div className="play-control">
                 <FaAngleLeft size={20} className="skip-back" />
-                {!props.isPlaying ? 
-                <FaPlay size={25} className="play" onClick={playSongHandler} /> :
-                <FaPause size={25} className="pause" onClick={playSongHandler} />}
+
+                {
+                    !isPlaying ?
+                        <FaPlay size={25} className="play" onClick={playSongHandler} /> :
+                        <FaPause size={25} className="pause" onClick={playSongHandler} />
+                }
+
                 <FaAngleRight size={20} className="skip-forward" />
             </div>
-            
-            <audio 
-                onLoadedMetadata={timeUpdateHandler} 
-                onTimeUpdate={timeUpdateHandler} 
-                ref={audioRef} 
-                src={props.currentSong.audio}>
-            </audio>
-       
+
         </div>
     );
 }
