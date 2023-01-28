@@ -27,6 +27,21 @@ function App() {
   //------------------------------------------->> Refs
   const audioRef = useRef(new Audio(audioSrc));
 
+  //------------------> Functions
+  function loadNewAudio() {
+    try {
+      audioRef.current.pause();
+      audioRef.current = new Audio(audioSrc);
+      if (audioRef.current.readyState == 4) {
+        if (isPlaying) {
+          audioRef.current.play();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   //------------------------------------------->> Event Listeners
   audioRef.current.addEventListener('loadeddata', (event) => {
     setSongProgress(
@@ -75,9 +90,9 @@ function App() {
         setIsPlaying={setIsPlaying}
         songProgress={songProgress}
         setSongProgress={setSongProgress}
-        tracks={tracks}
         trackIndex={trackIndex}
         setTrackIndex={setTrackIndex}
+        tracks={tracks}
       />
 
       {

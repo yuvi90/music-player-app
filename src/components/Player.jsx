@@ -1,14 +1,18 @@
 import React, { useEffect } from "react";
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from 'react-icons/fa';
 
-const Player = ({ audioRef, isPlaying, setIsPlaying, songProgress, setSongProgress, tracks, trackIndex, setTrackIndex }) => {
+const Player = ({ audioRef, isPlaying, setIsPlaying, songProgress, setSongProgress, trackIndex, setTrackIndex, tracks }) => {
 
     //----------------------------------------------->> Hooks
     useEffect(() => {
-        audioRef.current.pause();
-        audioRef.current.src = tracks[trackIndex].audioSrc;
-        if (isPlaying) {
-            audioRef.current.play();
+        try {
+            audioRef.current.pause();
+            audioRef.current = new Audio(tracks[trackIndex].audioSrc);
+            if (isPlaying) {
+                audioRef.current.play();
+            }
+        } catch (error) {
+            console.log(error);
         }
     }, [trackIndex])
 
@@ -55,6 +59,11 @@ const Player = ({ audioRef, isPlaying, setIsPlaying, songProgress, setSongProgre
                 await setTrackIndex(trackIndex - 1);
             }
         }
+        // audioRef.current.pause();
+        // audioRef.current = new Audio(tracks[trackIndex].audioSrc);
+        // if (isPlaying) {
+        //     audioRef.current.play();
+        // }
     }
 
     //--------------------------------------------------------------------->> Component
