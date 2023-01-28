@@ -10,8 +10,8 @@ function App() {
 
   //------------------------------------------->> State
   const [songs, setSongs] = useState(data);
-  const [libraryOpen, setLibraryOpen] = useState(false);
   const audioRef = useRef(null);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [currentSong, setCurrentSong] = useState(songs[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [songInfo, setSongInfo] = useState(
@@ -22,7 +22,6 @@ function App() {
   );
 
   //------------------------------------------->> Event Handlers
-
 
   const timeUpdateHandler = (e) => {
     const current = e.target.currentTime;
@@ -51,9 +50,11 @@ function App() {
   //------------------------------------------->> Component
   return (
     <div className={`App ${libraryOpen ? "library-active" : ""}`}>
+
       <Nav libraryOpen={libraryOpen} setLibraryOpen={setLibraryOpen} />
 
       <Song currentSong={currentSong} />
+
       <Player
         currentSong={currentSong}
         setCurrentSong={setCurrentSong}
