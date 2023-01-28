@@ -1,41 +1,37 @@
 import React from 'react';
 
-const LibrarySong = ({ songs, setSongs, song, setCurrentSong, audioRef, isPlaying }) => {
+const LibrarySong = ({ track, audioRef, trackIndex, setTrackIndex, tracks, setTracks, isPlaying, setIsPlaying }) => {
 
-    const selectHandler = () => {
-        const newSongs = songs.map((sg) => {
-            if (sg.id == song.id) {
+    const selectHandler = async () => {
+        const newSongs = tracks.map((song) => {
+            if (song.id == track.id) {
                 return {
-                    ...sg,
+                    ...song,
                     active: true,
                 };
-            } else 
-            {
+            } else {
                 return {
-                    ...sg,
+                    ...song,
                     active: false,
                 };
             }
         });
-        setSongs(newSongs);
-        setCurrentSong(song);
-
+        setTracks(newSongs);
+        setTrackIndex(track.id - 1);
+        audioRef.current.pause();
+        audioRef.current.src = tracks[trackIndex].audioSrc;
+        tracks[trackIndex].active = true;
         if (isPlaying) {
-            const playPromise = audioRef.current.play();
-            if (playPromise !== undefined) {
-                playPromise.then((audio) => {
-                    audioRef.current.play();
-                })
-            }
+            audioRef.current.play();
         }
     }
 
     return (
-        <div onClick={selectHandler} className={`library-song ${song.active ? 'selected' : ''}`}>
-            <img src={song.cover} alt="album-art" />
+        <div onClick={selectHandler} className={`library-song ${track.active ? 'selected' : ''}`}>
+            <img src={track.coverSrc} alt="album-art" />
             <div className='song-desc'>
-                <h3>{song.name}</h3>
-                <h4>{song.artist}</h4>
+                <h3>{track.title}</h3>
+                <h4>{track.artist}</h4>
             </div>
         </div>
     )

@@ -1,37 +1,18 @@
 import React, { useEffect } from "react";
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from 'react-icons/fa';
 
-const Player = ({ currentSong, setCurrentSong, audioRef, isPlaying, setIsPlaying, songInfo, setSongInfo, songs, setSongs }) => {
+const Player = ({ audioRef, isPlaying, setIsPlaying, songProgress, setSongProgress, tracks, trackIndex, setTrackIndex }) => {
 
+    //----------------------------------------------->> Hooks
     useEffect(() => {
-        const newSongs = songs.map((song) => {
-            if (song.id == currentSong.id) {
-                return {
-                    ...song,
-                    active: true,
-                };
-            } else {
-                return {
-                    ...song,
-                    active: false,
-                };
-            }
-        });
-        setSongs(newSongs);
-    }, [currentSong]);
+        audioRef.current.pause();
+        audioRef.current.src = tracks[trackIndex].audioSrc;
+        if (isPlaying) {
+            audioRef.current.play();
+        }
+    }, [trackIndex])
 
     //----------------------------------------------->> Event Handlers
-    const playSongHandler = () => {
-        if (!isPlaying) {
-            audioRef.current.play();
-            setIsPlaying(true);
-        }
-        else {
-            audioRef.current.pause();
-            setIsPlaying(false);
-        }
-    }
-
     const getTime = (time) => {
         return (
             Math.floor(time / 60) + ":" + ("0" + Math.floor(time % 60)).slice(-2)
@@ -43,37 +24,35 @@ const Player = ({ currentSong, setCurrentSong, audioRef, isPlaying, setIsPlaying
         return getTime(remainT);
     }
 
-    const dragHandler = (e) => {
-        audioRef.current.currentTime = e.target.value;
-        setSongInfo({ ...songInfo, currentTime: e.target.value });
+    const dragHandler = (event) => {
+        audioRef.current.currentTime = event.target.value;
+        setSongProgress({ ...songProgress, currentTime: event.target.value });
     }
 
-    const skipTrackHandler = (direction) => {
-        let currentIndex = songs.findIndex((song) => song.id == currentSong.id);
+    const playSongHandler = () => {
+        if (!isPlaying) {
+            audioRef.current.play();
+            setIsPlaying(true);
+        }
+        else {
+            audioRef.current.pause();
+            setIsPlaying(false);
+        }
+    }
+
+    const skipTrackHandler = async (direction) => {
         if (direction === 'skip-forward') {
-            setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+            if (trackIndex < (tracks.length - 1)) {
+                await setTrackIndex(trackIndex + 1);
+            } else {
+                await setTrackIndex(0);
+            }
         }
         if (direction === 'skip-back') {
-            if ((currentIndex - 1) % songs.length === -1) {
-                setCurrentSong(songs[songs.length - 1]);
-                if (isPlaying) {
-                    const playPromise = audioRef.current.play();
-                    if (playPromise !== undefined) {
-                        playPromise.then((audio) => {
-                            audioRef.current.play();
-                        })
-                    }
-                }
-                return;
-            }
-            setCurrentSong(songs[(currentIndex - 1) % songs.length]);
-        }
-        if (isPlaying) {
-            const playPromise = audioRef.current.play();
-            if (playPromise !== undefined) {
-                playPromise.then((audio) => {
-                    audioRef.current.play();
-                })
+            if (trackIndex - 1 < 0) {
+                await setTrackIndex(tracks.length - 1);
+            } else {
+                await setTrackIndex(trackIndex - 1);
             }
         }
     }
@@ -83,37 +62,49 @@ const Player = ({ currentSong, setCurrentSong, audioRef, isPlaying, setIsPlaying
         <div className="player">
 
             <div className="time-control">
-                <p>{getTime(songInfo.currentTime)}</p>
+
+                <p>{getTime(songProgress.currentTime)}</p>
+
                 <input
                     onChange={dragHandler}
                     min={0}
-                    max={songInfo.duration || 0}
-                    value={songInfo.currentTime}
+                    max={songProgress.duration || 0}
+                    value={songProgress.currentTime}
                     type="range"
                 />
+
                 <p>
                     {
-                        songInfo.duration ? 
+                        songProgress.duration ?
                             (
                                 !isPlaying ?
-                                    getTime(songInfo.duration) :
-                                    remainingTime(songInfo.duration, songInfo.currentTime)
+                                    getTime(songProgress.duration) :
+                                    remainingTime(songProgress.duration, songProgress.currentTime)
                             ) : "0:00"
 
                     }
                 </p>
+
             </div>
 
             <div className="play-control">
-                <FaAngleLeft size={20} className="skip-back" onClick={() => { skipTrackHandler('skip-back') }} />
+
+                <FaAngleLeft
+                    className="skip-back"
+                    onClick={() => { skipTrackHandler('skip-back') }}
+                />
 
                 {
                     !isPlaying ?
-                        <FaPlay size={25} className="play" onClick={playSongHandler} /> :
-                        <FaPause size={25} className="pause" onClick={playSongHandler} />
+                        <FaPlay className="play" onClick={playSongHandler} /> :
+                        <FaPause className="pause" onClick={playSongHandler} />
                 }
 
-                <FaAngleRight size={20} className="skip-forward" onClick={() => { skipTrackHandler('skip-forward') }} />
+                <FaAngleRight
+                    className="skip-forward"
+                    onClick={() => { skipTrackHandler('skip-forward') }}
+                />
+
             </div>
 
         </div>

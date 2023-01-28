@@ -4,89 +4,94 @@ import "./styles/app.scss";
 //Adding Components
 import { Player, Song, Library, Nav } from "./components";
 //Adding Data
-import { data } from "./dummy_data/data";
+import { data } from "./assets/data";
 
 function App() {
 
-  //------------------------------------------->> State
-  const [songs, setSongs] = useState(data);
-  const audioRef = useRef(null);
-  const [libraryOpen, setLibraryOpen] = useState(false);
-  const [currentSong, setCurrentSong] = useState(songs[0]);
+  //------------------------------------------->> Hooks
+
+  const [tracks, setTracks] = useState(data);
+  const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [songInfo, setSongInfo] = useState(
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [songProgress, setSongProgress] = useState(
     {
       currentTime: 0,
       duration: 0,
     }
   );
 
-  //------------------------------------------->> Event Handlers
+  //-----------------> Destructuring
+  const { id, title, artist, coverSrc, audioSrc, active, color } = tracks[trackIndex];
 
-  const timeUpdateHandler = (e) => {
-    const current = e.target.currentTime;
-    const duration = e.target.duration;
+  //------------------------------------------->> Refs
+  const audioRef = useRef(new Audio(audioSrc));
 
-    setSongInfo({
-      ...songInfo,
-      currentTime: current,
-      duration: duration,
-    });
-  }
-
-  const songEndHandler = () => {
-    let currentIndex = songs.findIndex((song) => song.id == currentSong.id);
-    setCurrentSong(songs[(currentIndex + 1) % songs.length]);
-    if (isPlaying) {
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.then((audio) => {
-          audioRef.current.play();
-        })
+  //------------------------------------------->> Event Listeners
+  audioRef.current.addEventListener('loadeddata', (event) => {
+    setSongProgress(
+      {
+        currentTime: event.target.currentTime,
+        duration: event.target.duration,
       }
+    );
+  });
+
+  audioRef.current.addEventListener('timeupdate', (event) => {
+    setSongProgress(
+      {
+        currentTime: event.target.currentTime,
+        duration: event.target.duration,
+      }
+    );
+  });
+
+  audioRef.current.addEventListener('ended', () => {
+    if (trackIndex < (tracks.length - 1)) {
+      setTrackIndex(trackIndex + 1);
+    } else {
+      setTrackIndex(0);
     }
-  }
+  });
 
   //------------------------------------------->> Component
   return (
     <div className={`App ${libraryOpen ? "library-active" : ""}`}>
 
-      <Nav libraryOpen={libraryOpen} setLibraryOpen={setLibraryOpen} />
+      <Nav
+        libraryOpen={libraryOpen}
+        setLibraryOpen={setLibraryOpen}
+      />
 
-      <Song currentSong={currentSong} />
+      <Song
+        title={title}
+        artist={artist}
+        coverSrc={coverSrc}
+      />
 
       <Player
-        currentSong={currentSong}
-        setCurrentSong={setCurrentSong}
+        audioRef={audioRef}
         isPlaying={isPlaying}
         setIsPlaying={setIsPlaying}
-        audioRef={audioRef}
-        songInfo={songInfo}
-        setSongInfo={setSongInfo}
-        songs={songs}
-        setSongs={setSongs}
+        songProgress={songProgress}
+        setSongProgress={setSongProgress}
+        tracks={tracks}
+        trackIndex={trackIndex}
+        setTrackIndex={setTrackIndex}
       />
 
       {
-        <Library
-          songs={songs}
-          setSongs={setSongs}
-          setCurrentSong={setCurrentSong}
-          audioRef={audioRef}
-          isPlaying={isPlaying}
-          setIsPlaying={setIsPlaying}
-          libraryOpen={libraryOpen}
-        />
+        // <Library
+        //   audioRef={audioRef}
+        //   tracks={tracks}
+        //   setTracks={setTracks}
+        //   trackIndex={trackIndex}
+        //   setTrackIndex={setTrackIndex}
+        //   isPlaying={isPlaying}
+        //   setIsPlaying={setIsPlaying}
+        //   libraryOpen={libraryOpen}
+        // />
       }
-
-      <audio
-        onLoadedMetadata={timeUpdateHandler}
-        onTimeUpdate={timeUpdateHandler}
-        ref={audioRef}
-        src={currentSong.audio}
-        onEnded={songEndHandler}
-      >
-      </audio>
 
     </div>
   )
