@@ -10,32 +10,32 @@ function App() {
   const audioRef = useRef(new Audio(audioSrc));
 
   //------------------------------------------->> Event Listeners
-  
-  // audioRef.current.addEventListener('loadeddata', (event) => {
-  //   setSongProgress(
-  //     {
-  //       currentTime: event.target.currentTime,
-  //       duration: event.target.duration,
-  //     }
-  //   );
-  // });
 
-  // audioRef.current.addEventListener('timeupdate', (event) => {
-  //   setSongProgress(
-  //     {
-  //       currentTime: event.target.currentTime,
-  //       duration: event.target.duration,
-  //     }
-  //   );
-  // });
+  audioRef.current.addEventListener('loadeddata', (event) => {
+    setSongProgress(
+      {
+        currentTime: event.target.currentTime,
+        duration: event.target.duration,
+      }
+    );
+  });
 
-  // audioRef.current.addEventListener('ended', () => {
-  //   if (trackIndex < (tracks.length - 1)) {
-  //     setTrackIndex(trackIndex + 1);
-  //   } else {
-  //     setTrackIndex(0);
-  //   }
-  // });
+  audioRef.current.addEventListener('timeupdate', (event) => {
+    setSongProgress(
+      {
+        currentTime: event.target.currentTime,
+        duration: event.target.duration,
+      }
+    );
+  });
+
+  audioRef.current.addEventListener('ended', () => {
+    if (trackIndex < (tracks.length - 1)) {
+      setTrackIndex(trackIndex + 1);
+    } else {
+      setTrackIndex(0);
+    }
+  });
 
   //------------------------------------------->> Components
 
