@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { DataContext } from "../context/DataProvider";
 import { FaMusic } from 'react-icons/fa';
 
-const Nav = ({ libraryOpen, setLibraryOpen }) => {
+const Nav = () => {
+
+    const { libraryOpen, setLibraryOpen } = useContext(DataContext);
 
     const libraryHandler = () => {
         setLibraryOpen(!libraryOpen);

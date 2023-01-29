@@ -1,13 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
+import { DataContext } from "../context/DataProvider";
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from 'react-icons/fa';
 
-const Player = ({ audioRef, isPlaying, setIsPlaying, songProgress, setSongProgress, trackIndex, setTrackIndex, tracks }) => {
+const Player = ({ audioRef }) => {
 
+    const { isPlaying, setIsPlaying, songProgress, setSongProgress, trackIndex, setTrackIndex, tracks } = useContext(DataContext);
+    const audioSrc = tracks[trackIndex].audioSrc;
     //----------------------------------------------->> Hooks
     useEffect(() => {
         try {
             audioRef.current.pause();
-            audioRef.current = new Audio(tracks[trackIndex].audioSrc);
+            audioRef.current.src = audioSrc;
             if (isPlaying) {
                 audioRef.current.play();
             }

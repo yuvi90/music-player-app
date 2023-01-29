@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
+import { DataContext } from "../context/DataProvider";
 
-const Song = ({ title, artist, coverSrc }) => {
+const Song = () => {
+
+    const { tracks, trackIndex } = useContext(DataContext);
+
+    const coverSrc = tracks[trackIndex].coverSrc;
+    const title = tracks[trackIndex].title;
+    const artist = tracks[trackIndex].artist;
+
     return (
         <div className="song-container">
             <img src={coverSrc} alt="album-art" />

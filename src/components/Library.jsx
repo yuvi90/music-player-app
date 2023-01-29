@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import LibrarySong from './LibrarySong';
+import { DataContext } from "../context/DataProvider";
 
-const Library = ({ audioRef, tracks, setTracks, trackIndex, setTrackIndex, isPlaying, setIsPlaying, libraryOpen }) => {
+const Library = ({ audioRef }) => {
+
+    const { tracks, setTracks, trackIndex, setTrackIndex, isPlaying, setIsPlaying, libraryOpen } = useContext(DataContext);
+
     return (
         <div className={`library ${libraryOpen ? 'active-library' : ''}`}>
             <h2>Library</h2>
