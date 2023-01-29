@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { DataContext } from "../context/DataProvider";
 
-const LibrarySong = ({ track, audioRef, trackIndex, setTrackIndex, tracks, setTracks, isPlaying, setIsPlaying }) => {
+const LibrarySong = ({ audioRef, track }) => {
+
+    const { tracks, setTracks, trackIndex, setTrackIndex, isPlaying } = useContext(DataContext);
 
     const selectHandler = async () => {
         const newSongs = tracks.map((song) => {

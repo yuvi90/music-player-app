@@ -44,14 +44,8 @@ function App() {
 
       <Nav />
       <Song />
-      <Player
-        audioRef={audioRef}
-      />
-      {
-        // <Library
-        //   audioRef={audioRef}
-        // />
-      }
+      <Player audioRef={audioRef} />
+      <Library audioRef={audioRef} />
 
     </div>
   )

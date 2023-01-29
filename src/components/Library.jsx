@@ -4,7 +4,7 @@ import { DataContext } from "../context/DataProvider";
 
 const Library = ({ audioRef }) => {
 
-    const { tracks, setTracks, trackIndex, setTrackIndex, isPlaying, setIsPlaying, libraryOpen } = useContext(DataContext);
+    const { tracks, libraryOpen } = useContext(DataContext);
 
     return (
         <div className={`library ${libraryOpen ? 'active-library' : ''}`}>
@@ -14,15 +14,9 @@ const Library = ({ audioRef }) => {
                     tracks.map(track => {
                         return (
                             <LibrarySong
+                                audioRef={audioRef}
                                 key={track.id}
                                 track={track}
-                                audioRef={audioRef}
-                                isPlaying={isPlaying}
-                                setIsPlaying={setIsPlaying}
-                                tracks={tracks}
-                                setTracks={setTracks}
-                                trackIndex={trackIndex}
-                                setTrackIndex={setTrackIndex}
                             />
                         )
                     })
