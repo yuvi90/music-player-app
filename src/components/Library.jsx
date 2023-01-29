@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import LibrarySong from './LibrarySong';
 import { DataContext } from "../context/DataProvider";
 
-const Library = ({ audioRef }) => {
+const Library = () => {
 
     const { tracks, libraryOpen } = useContext(DataContext);
 
@@ -14,7 +14,6 @@ const Library = ({ audioRef }) => {
                     tracks.map(track => {
                         return (
                             <LibrarySong
-                                audioRef={audioRef}
                                 key={track.id}
                                 track={track}
                             />

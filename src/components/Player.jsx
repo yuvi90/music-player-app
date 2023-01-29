@@ -1,44 +1,22 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { DataContext } from "../context/DataProvider";
+import { getTime, remainingTime } from "../util";
 import { FaPlay, FaAngleLeft, FaAngleRight, FaPause } from 'react-icons/fa';
 
 const Player = ({ audioRef }) => {
 
     const { isPlaying, setIsPlaying, songProgress, setSongProgress, trackIndex, setTrackIndex, tracks } = useContext(DataContext);
-    const audioSrc = tracks[trackIndex].audioSrc;
-    //----------------------------------------------->> Hooks
-    useEffect(() => {
-        try {
-            audioRef.current.pause();
-            audioRef.current.src = audioSrc;
-            if (isPlaying) {
-                audioRef.current.play();
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }, [trackIndex])
 
     //----------------------------------------------->> Event Handlers
-    const getTime = (time) => {
-        return (
-            Math.floor(time / 60) + ":" + ("0" + Math.floor(time % 60)).slice(-2)
-        );
-    }
-
-    const remainingTime = (duration, time) => {
-        let remainT = duration - time;
-        return getTime(remainT);
-    }
 
     const dragHandler = (event) => {
         audioRef.current.currentTime = event.target.value;
         setSongProgress({ ...songProgress, currentTime: event.target.value });
     }
 
-    const playSongHandler = () => {
+    const playSongHandler = async () => {
         if (!isPlaying) {
-            audioRef.current.play();
+            await audioRef.current.play();
             setIsPlaying(true);
         }
         else {
@@ -62,14 +40,10 @@ const Player = ({ audioRef }) => {
                 await setTrackIndex(trackIndex - 1);
             }
         }
-        // audioRef.current.pause();
-        // audioRef.current = new Audio(tracks[trackIndex].audioSrc);
-        // if (isPlaying) {
-        //     audioRef.current.play();
-        // }
     }
 
-    //--------------------------------------------------------------------->> Component
+    //--------------------------------------------------------------------->> Components
+
     return (
         <div className="player">
 

@@ -10,7 +10,7 @@ const DataProvider = ({ children }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [libraryOpen, setLibraryOpen] = useState(false);
     const [songProgress, setSongProgress] = useState({ currentTime: 0, duration: 0, });
-
+    
     return (
         <DataContext.Provider value={{ tracks, setTracks, trackIndex, setTrackIndex, isPlaying, setIsPlaying, libraryOpen, setLibraryOpen, songProgress, setSongProgress }}>
             {children}

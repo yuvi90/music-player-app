@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { DataContext } from "../context/DataProvider";
 
-const LibrarySong = ({ audioRef, track }) => {
+const LibrarySong = ({ track }) => {
 
-    const { tracks, setTracks, trackIndex, setTrackIndex, isPlaying } = useContext(DataContext);
+    const { tracks, setTracks, setTrackIndex } = useContext(DataContext);
 
     const selectHandler = async () => {
         const newSongs = tracks.map((song) => {
@@ -20,13 +20,7 @@ const LibrarySong = ({ audioRef, track }) => {
             }
         });
         setTracks(newSongs);
-        setTrackIndex(track.id - 1);
-        audioRef.current.pause();
-        audioRef.current.src = tracks[trackIndex].audioSrc;
-        tracks[trackIndex].active = true;
-        if (isPlaying) {
-            audioRef.current.play();
-        }
+        await setTrackIndex(track.id - 1);
     }
 
     return (
