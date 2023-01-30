@@ -22,6 +22,9 @@ h4 {
 }
 
 .App {
+    background-image: linear-gradient(60deg,rgb(238, 247, 255), rgb(150, 208, 247));
+    // background: rgb(17,22,28);
+    height: 100vh;
     transition: all 0.5s ease;
 }
 
