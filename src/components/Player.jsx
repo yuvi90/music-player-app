@@ -118,7 +118,6 @@ const Player = () => {
                                         getTime(songProgress.duration) :
                                         remainingTime(songProgress.duration, songProgress.currentTime)
                                 ) : "0:00"
-
                         }
                     </p>
 

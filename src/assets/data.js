@@ -1,5 +1,5 @@
-import { DeathBedImg, BadLiarImg, FadedImg, HateMeImg, SoloImg, WithoutMeImg } from "./cover";
-import { DeathBed, BadLiar, Faded, HateMe, Solo, WithoutMe } from "./audio";
+import { DeathBedImg, BadLiarImg, FadedImg, HateMeImg, SoloImg, WithoutMeImg, OnTopImg } from "./cover";
+import { DeathBed, BadLiar, Faded, HateMe, Solo, WithoutMe, OnTop } from "./audio";
 
 const data = [
     {
@@ -53,6 +53,15 @@ const data = [
         artist: "Halsey",
         coverSrc: WithoutMeImg,
         audioSrc: WithoutMe,
+        active: false,
+        color: ["", ""],
+    },
+    {
+        id: "7",
+        title: "On Top",
+        artist: "Karan Aujla",
+        coverSrc: OnTopImg,
+        audioSrc: OnTop,
         active: false,
         color: ["", ""],
     }
